@@ -1,7 +1,6 @@
-package main
+package gchart
 
 import (
-	//"fmt"
 	"net/http"
 	"text/template"
 )
@@ -9,7 +8,7 @@ import (
 var (
 	ChartHandlers = make(map[string]ChartIf)
 	ChartFiles    []string
-	Index         int
+	Index int
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {

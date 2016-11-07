@@ -1,4 +1,4 @@
-package main
+package gchart
 
 import (
 	"github.com/bitly/go-simplejson"
@@ -43,6 +43,7 @@ func (c *SplineChart) Parse(ini *goini.INI) (map[string]string, error) {
 	json := simplejson.New()
 	json.Set("DataArray", datas)
 	b, _ := json.Get("DataArray").Encode()
+	println(string(b))
 	args["DataArray"] = string(b)
 
 	return args, nil

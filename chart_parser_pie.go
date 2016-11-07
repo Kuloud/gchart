@@ -1,4 +1,4 @@
-package main
+package gchart
 
 import (
 	"github.com/zieckey/goini"

@@ -1,4 +1,4 @@
-package main
+package gchart
 
 // see the resource of : http://www.freecdn.cn/libs/highcharts/
 
@@ -8,7 +8,7 @@ var TemplateSplineHtml = `{{define "T"}}
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>Gochart - {{.ChartType}} | CodeG.cn</title>
+        <title>Chart - {{.ChartType}} | kuloud.com</title>
 
         <script type="text/javascript" src="http://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
         <script type="text/javascript">
@@ -86,7 +86,7 @@ var TemplateSplineHtml = `{{define "T"}}
         </script>
     </head>
     <body>
-    By <a id="copyright" class="anchor" href="http://blog.codeg.cn/2014/12/13/Hello-CodeG/" >zieckey@codeg.cn</a>
+    By <a id="copyright" class="anchor" href="http://kuloud.com/" >kuloud@kuloud.com</a>
     <script type="text/javascript" src="http://cdn.hcharts.cn/highcharts/4.0.1/highcharts.js"></script>
     <script type="text/javascript" src="http://cdn.hcharts.cn/highcharts/4.0.1/modules/exporting.js"></script>
 
