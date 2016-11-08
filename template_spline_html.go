@@ -46,7 +46,8 @@ var TemplateSplineHtml = `{{define "T"}}
                         value: 0,
                         width: 1,
                         color: '#808080'
-                    }]
+                    }],
+                    min : '{{.Min}}'
                 },
                 tooltip: {
                     shared: true,
@@ -82,6 +83,49 @@ var TemplateSplineHtml = `{{define "T"}}
                 ]
                 */
             });
+            $('#container2').highcharts({
+                chart: {
+                    // type: 'spline'
+                    type: '{{.ChartType}}'
+                                        // 默认是折线图(line)。type取值如下：
+                                        // line:折线图
+                                        // spline:曲线图，线条圆滑一些
+                                        // column:竖向柱状图
+                                        // area:面积图
+                                        // bar:横向柱状图
+                                        // 更多选项请参考：http://api.highcharts.com/highcharts#plotOptions
+                },
+                title: {
+                    text: '分时段数据',
+                },
+                xAxis: {
+                    // categories: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+                    categories: [{{.XAxisNumbers}}] // JSONArray格式，数字，与x轴上点数的个数一致，
+                },
+                yAxis: {
+                    title: {
+                        // text: 'Temperature (°C)'
+                        text: '{{.YAxisText}}'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    shared: true,
+                    // valueSuffix: '°C'
+                    valueSuffix: '{{.ValueSuffix}}'
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: {{.DataArray2}}
+            });
         });    
         </script>
     </head>
@@ -90,7 +134,9 @@ var TemplateSplineHtml = `{{define "T"}}
     <script type="text/javascript" src="http://cdn.hcharts.cn/highcharts/4.0.1/highcharts.js"></script>
     <script type="text/javascript" src="http://cdn.hcharts.cn/highcharts/4.0.1/modules/exporting.js"></script>
 
-    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div><br/>
+
+    <div id="container2" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
     </body>
 </html>
