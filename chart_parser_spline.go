@@ -39,7 +39,7 @@ func (c *SplineChart) Parse(ini *goini.INI) (map[string]string, error) {
 				jd = append(jd, val)
 				if val > 0 && min == 0 {
 					min = val - 100
-					args["Min"] = strconv.FormatFloat(min, 'g', -1, 64)
+					args["YMin"] = strconv.FormatFloat(min, 'g', -1, 64)
 				}
 
 				if diff > 0 && val > diff {
