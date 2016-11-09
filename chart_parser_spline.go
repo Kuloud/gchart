@@ -54,7 +54,11 @@ func (c *SplineChart) Parse(ini *goini.INI) (map[string]string, error) {
 						}
 					}
 				}
-				df = append(df, val - temp)
+				if val > 0 && temp > 0 {
+					df = append(df, val - temp)
+				} else {
+					df = append(df, 0)
+				}
 				temp = val
 			}
 		}
