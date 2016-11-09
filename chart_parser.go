@@ -26,8 +26,7 @@ func Parse(file string) (tt TemplateArgs, err error) {
 		return tt, err
 	}
 
-	t, _ := ini.Get("ChartType")
-	if f, ok := ChartHandlers[t]; ok {
+	if f, ok := ChartHandlers["column"]; ok {
 		tt.args, err = f.Parse(ini)
 		tt.tmpl = f.Template()
 	}

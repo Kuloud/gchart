@@ -5,60 +5,64 @@ import (
 	"github.com/zieckey/goini"
 	"strconv"
 	"strings"
+	"time"
+	"fmt"
 )
+
+const date_format = "2006-01-02"
 
 type SplineChart int
 
 func (c *SplineChart) Parse(ini *goini.INI) (map[string]string, error) {
 	args := make(map[string]string)
-	args["ChartType"], _ = ini.Get("ChartType")
-	args["Title"], _ = ini.Get("Title")
-	args["SubTitle"], _ = ini.Get("SubTitle")
-	args["YAxisText"], _ = ini.Get("YAxisText")
-	args["XAxisNumbers"], _ = ini.Get("XAxisNumbers")
-	args["ValueSuffix"], _ = ini.Get("ValueSuffix")
 
 	datas := make([]interface{}, 0)
-	datas2 := make([]interface{}, 0)
 
 	kv, _ := ini.GetKvmap(goini.DefaultSection)
 
-	var diff float64
-	var min float64
+	beforeYesterday := time.Now().AddDate(0, 0, -2).Format(date_format)
+	yesterday := time.Now().AddDate(0, 0, -1).Format(date_format)
+	today := time.Now().Format(date_format)
+	var temp float64
 	for k, v := range kv {
-		if !strings.HasPrefix(k, DataPrefix) {
+		if !strings.HasPrefix(k, DataPrefix + beforeYesterday) && !strings.HasPrefix(k, DataPrefix + yesterday) && !strings.HasPrefix(k, DataPrefix + today) {
 			continue
 		}
+		temp = 0
 
 		dd := strings.Split(v, ", ")
-		jd := make([]interface{}, 0)
-		diffjd := make([]interface{}, 0)
-		for _, d := range dd {
+		df := make([]interface{}, 0)
+		for i, d := range dd {
 			val, err := strconv.ParseFloat(d, 64)
 			if err == nil {
-				jd = append(jd, val)
-				if val > 0 && min == 0 {
-					min = val - 100
-					args["YMin"] = strconv.FormatFloat(min, 'g', -1, 64)
+				if i == 0 {
+					day, err := time.Parse(date_format, k[len(DataPrefix):])
+					if err == nil {
+						dayBefore := day.AddDate(0, 0, -1).Format(date_format)
+						vv, ok := ini.Get(DataPrefix + dayBefore)
+						if ok {
+							index := strings.LastIndex(vv, ", ")
+							if index > 0 {
+								last, err := strconv.ParseFloat(vv[index + 2:], 64)
+								if err == nil {
+									fmt.Println("last", last)
+									temp = last
+								} else {
+									fmt.Println(err)
+								}
+							}
+						}
+					}
 				}
-
-				if diff > 0 && val > diff {
-					diffjd = append(diffjd, val - diff)
-				} else {
-					diffjd = append(diffjd, 0)
-				}
-				diff = val
+				df = append(df, val - temp)
+				temp = val
 			}
 		}
+
 		json := simplejson.New()
 		json.Set("name", k[len(DataPrefix):])
-		json.Set("data", jd)
+		json.Set("data", df)
 		datas = append(datas, json)
-
-		json = simplejson.New()
-		json.Set("name", k[len(DataPrefix):])
-		json.Set("data", diffjd)
-		datas2 = append(datas2, json)
 	}
 
 	json := simplejson.New()
@@ -68,12 +72,6 @@ func (c *SplineChart) Parse(ini *goini.INI) (map[string]string, error) {
 	println(string(b))
 	args["DataArray"] = string(b)
 
-	json = simplejson.New()
-	json.Set("DataArray2", datas2)
-
-	b, _ = json.Get("DataArray2").Encode()
-	println(string(b))
-	args["DataArray2"] = string(b)
 	return args, nil
 }
 
