@@ -10,7 +10,7 @@ import (
 const DataPrefix = "Data|"
 
 type ChartIf interface {
-	Parse(ini *goini.INI) (map[string]string, error)
+	Parse(ini *goini.INI, date string) (map[string]string, error)
 	Template() string
 }
 
@@ -19,7 +19,7 @@ type TemplateArgs struct {
 	tmpl string
 }
 
-func Parse(file string) (tt TemplateArgs, err error) {
+func Parse(file string, date string) (tt TemplateArgs, err error) {
 	ini := goini.New()
 	err = ini.ParseFile(file)
 	if err != nil {
@@ -27,7 +27,7 @@ func Parse(file string) (tt TemplateArgs, err error) {
 	}
 
 	if f, ok := ChartHandlers["column"]; ok {
-		tt.args, err = f.Parse(ini)
+		tt.args, err = f.Parse(ini, date)
 		tt.tmpl = f.Template()
 	}
 

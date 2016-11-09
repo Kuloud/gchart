@@ -11,7 +11,7 @@ var (
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	tt, err := Parse(ChartFiles[0])
+	tt, err := Parse(ChartFiles[0], r.URL.Path[1:])
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		return

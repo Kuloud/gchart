@@ -13,7 +13,7 @@ const date_format = "2006-01-02"
 
 type SplineChart int
 
-func (c *SplineChart) Parse(ini *goini.INI) (map[string]string, error) {
+func (c *SplineChart) Parse(ini *goini.INI, date string) (map[string]string, error) {
 	args := make(map[string]string)
 
 	datas := make([]interface{}, 0)
@@ -21,6 +21,12 @@ func (c *SplineChart) Parse(ini *goini.INI) (map[string]string, error) {
 	kv, _ := ini.GetKvmap(goini.DefaultSection)
 
 	today := time.Now().Format(date_format)
+	_, err := time.Parse(date_format, date)
+	if err == nil {
+		today = date
+	}
+	fmt.Println("date", today)
+
 	var temp float64
 	for k, v := range kv {
 		if !strings.HasPrefix(k, DataPrefix + today) {
