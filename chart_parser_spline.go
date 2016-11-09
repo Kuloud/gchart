@@ -20,18 +20,17 @@ func (c *SplineChart) Parse(ini *goini.INI) (map[string]string, error) {
 
 	kv, _ := ini.GetKvmap(goini.DefaultSection)
 
-	beforeYesterday := time.Now().AddDate(0, 0, -2).Format(date_format)
-	yesterday := time.Now().AddDate(0, 0, -1).Format(date_format)
 	today := time.Now().Format(date_format)
 	var temp float64
 	for k, v := range kv {
-		if !strings.HasPrefix(k, DataPrefix + beforeYesterday) && !strings.HasPrefix(k, DataPrefix + yesterday) && !strings.HasPrefix(k, DataPrefix + today) {
+		if !strings.HasPrefix(k, DataPrefix + today) {
 			continue
 		}
 		temp = 0
 
 		dd := strings.Split(v, ", ")
 		df := make([]interface{}, 0)
+		var total float64
 		for i, d := range dd {
 			val, err := strconv.ParseFloat(d, 64)
 			if err == nil {
@@ -55,6 +54,7 @@ func (c *SplineChart) Parse(ini *goini.INI) (map[string]string, error) {
 					}
 				}
 				if val > 0 && temp > 0 {
+					total += (val - temp)
 					df = append(df, val - temp)
 				} else {
 					df = append(df, 0)
@@ -62,6 +62,7 @@ func (c *SplineChart) Parse(ini *goini.INI) (map[string]string, error) {
 				temp = val
 			}
 		}
+		args["TotalNum"] = strconv.FormatFloat(total, 'g', -1, 64)
 
 		json := simplejson.New()
 		json.Set("name", k[len(DataPrefix):])
